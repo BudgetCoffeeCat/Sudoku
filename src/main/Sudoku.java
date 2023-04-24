@@ -26,4 +26,26 @@ public class Sudoku {
         if(retVal) board[position.x-1][position.y-1] = value-1;
         return retVal;
     }
+
+    public static void print() {
+        System.out.println("___________________");
+        System.out.println("| | | | | | | | | |");
+        System.out.println("___________________");
+        System.out.println("| | | | | | | | | |");
+        System.out.println("___________________");
+        System.out.println("| | | | | | | | | |");
+        System.out.println("___________________");
+        System.out.println("| | | | | | | | | |");
+        System.out.println("___________________");
+        System.out.println("| | | | | | | | | |");
+        System.out.println("___________________");
+        System.out.println("| | | | | | | | | |");
+        System.out.println("___________________");
+        System.out.println("| | | | | | | | | |");
+        System.out.println("___________________");
+        System.out.println("| | | | | | | | | |");
+        System.out.println("___________________");
+        System.out.println("| | | | | | | | | |");
+        System.out.println("___________________");
+    }
 }
