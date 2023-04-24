@@ -16,9 +16,14 @@ public class Sudoku {
         // add code for a random board
         this.board = board;
     }
-    public boolean win(){
+    public boolean win() {
         boolean retVal = false;
         // add code to check if the position is winning
+        for (int i = 0; i < board.length; i++) {
+            for (int x = 1; x <= 9; x++){
+
+            }
+        }
         return retVal;
     }
     public boolean set(Position position, int value){
