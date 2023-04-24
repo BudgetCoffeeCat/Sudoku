@@ -28,8 +28,12 @@ public class Sudoku {
     }
 
     public static void print() {
-        System.out.println("___________________");
-        System.out.println("| | | | | | | | | |");
+        for (int i = 0; i < reset().board[][].length; i++){
+            System.out.println("___________________");
+            for (int j = 0; j < reset().board[][].length; j++){
+                System.out.println("| | | | | | | | | |");
+            }
+        }
         System.out.println("___________________");
         System.out.println("| | | | | | | | | |");
         System.out.println("___________________");
