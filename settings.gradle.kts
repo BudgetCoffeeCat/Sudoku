@@ -1,1 +1,1 @@
-rootProject.name = "Sudoku"
+rootProject.name = "src.main.Sudoku"
