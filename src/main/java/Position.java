@@ -4,7 +4,6 @@
  *  Purpose:
  *      Creates a struct that stores the information for a position on a sudoku board
  */
-package src.main;
 
 public class Position {
     int x;
