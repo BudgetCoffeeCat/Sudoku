@@ -180,6 +180,20 @@ public class Sudoku {
         }
         return retVal;
     }
+    public static void print(list) {
+        for (int i = 0; i < reset().board[][].length; i++){
+            System.out.println("___________________");
+            System.out.println("|");
+            for (int j = 0; j < reset().board[][].length; j++){
+                if (list[i][j] == 0){
+                    System.out.println(" |");
+                } else{
+                    System.out.println(list[i][j]+"|");
+                }
+            }
+        }
+        System.out.println("___________________");
+    }
     public boolean set(Position position, int value){
         boolean retVal = value<10 && value > 0;
         if(retVal) board[position.x-1][position.y-1] = value-1;
