@@ -32,10 +32,12 @@ public class Sudoku {
     public void setPosition(Position position, int newVal) throws InvalidArgumentException {
         if (newVal > 9) throw new InvalidArgumentException("The Entered Value Is Greater Than 9");
         if (newVal < 0) throw new InvalidArgumentException("The Entered Value Is Less Than 0");
+        position.y --;
+        position.x --;
         if (locked(position)) {
             throw new InvalidArgumentException("The Entered Position Is \u001B[33mLocked\u001B[37m");
         }
-        board[position.y-1][position.x-1] = newVal;
+        board[position.y][position.x] = newVal;
     }
     public void reset(){
         int[][] board = solvedBoard.clone();
