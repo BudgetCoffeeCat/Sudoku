@@ -10,8 +10,8 @@ import java.util.Random;
 
 public class Sudoku {
     private int[][] board;
-    private int difficulty = 15;
-    Position[] locked;
+    private final int difficulty;
+    private final Position[] locked;
     private final int[][] solvedBoard = new int[][]{
             {1, 2, 3, 4, 5, 6, 7, 8, 9},
             {4, 5, 6, 7, 8, 9, 1, 2, 3},
@@ -23,47 +23,62 @@ public class Sudoku {
             {6, 4, 5, 9, 7, 8, 3, 1, 2},
             {9, 7, 8, 3, 1, 2, 6, 4, 5}
     };
-    public Sudoku(){
+    public Sudoku(int difficulty){
+        System.out.println("Creating Random Sudoku Board");
+        this.difficulty = difficulty;
+        locked = new Position[difficulty];
         reset();
     }
-    public void setDifficulty(int difficulty) {
-        if (difficulty > 10 && difficulty < 81) {
-            this.difficulty = difficulty;
+    public void setPosition(Position position, int newVal) throws InvalidArgumentException {
+        if (newVal > 9) throw new InvalidArgumentException("The Entered Value Is Greater Than 9");
+        if (newVal < 0) throw new InvalidArgumentException("The Entered Value Is Less Than 0");
+        if (locked(position)) {
+            throw new InvalidArgumentException("The Entered Position Is \u001B[33mLocked\u001B[37m");
         }
+        board[position.y-1][position.x-1] = newVal;
     }
-
     public void reset(){
         int[][] board = solvedBoard.clone();
+        this.board = new int[][]{
+                {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0}
+        };
         Random random = new Random(System.currentTimeMillis());
-        for (int i = 0; i<3; i++){//shuffle the board 3 times
-            for (int j = 1; j<10; i++){//switch where each of the numbers are
-                swapNumbers(j, random.nextInt(9)+1);
-            }
-            for (int j = 0; j<3; j++){//randomize columns 0-2
-                switchColumns(j, random.nextInt(3));
-            }
-            for (int j = 3; j<6; j++){//randomize columns 3-5
-                switchColumns(j, random.nextInt(3)+3);
-            }
-            for (int j = 6; j<9; j++){//randomize columns 6-8
-                switchColumns(j, random.nextInt(3)+6);
-            }
-            for (int j = 0; j<3; j++){//randomize rows 0-2
-                switchRows(j, random.nextInt(3));
-            }
-            for (int j = 3; j<6; j++){//randomize rows 3-5
-                switchRows(j, random.nextInt(3)+3);
-            }
-            for (int j = 6; j<9; j++){//randomize rows 6-8
-                switchRows(j, random.nextInt(3)+6);
-            }
-            for (int j = 0; j<3; j++){//randomize block rows
-                switchBlockRows(j, random.nextInt(3));
-            }
-            for (int j = 0; j<3; j++){//randomize block columns
-                switchBlockColumns(j, random.nextInt(3));
-            }
-        }//Now board is a randomized solved sudoku puzzle
+        for (int j = 1; j<10; j++){//randomize where each of the numbers are
+            swapNumbers(board, j, random.nextInt(9)+1);
+        }
+        for (int j = 0; j<3; j++){//randomize columns 0-2
+            switchColumns(board, j, random.nextInt(3));
+        }
+        for (int j = 3; j<6; j++){//randomize columns 3-5
+            switchColumns(board, j, random.nextInt(3)+3);
+        }
+        for (int j = 6; j<9; j++){//randomize columns 6-8
+            switchColumns(board, j, random.nextInt(3)+6);
+        }
+        for (int j = 0; j<3; j++){//randomize rows 0-2
+            switchRows(board, j, random.nextInt(3));
+        }
+        for (int j = 3; j<6; j++){//randomize rows 3-5
+            switchRows(board, j, random.nextInt(3)+3);
+        }
+        for (int j = 6; j<9; j++){//randomize rows 6-8
+            switchRows(board, j, random.nextInt(3)+6);
+        }
+        for (int j = 0; j<3; j++){//randomize block rows
+            switchBlockRows(board, j, random.nextInt(3));
+        }
+        for (int j = 0; j<3; j++){//randomize block columns
+            switchBlockColumns(board, j, random.nextInt(3));
+        }
+        //Now board is a randomized solved sudoku puzzle
         ArrayList<Position> locked = new ArrayList<Position>();
         for (int i = 0; i<difficulty; i++){
             Position pos = new Position();
@@ -80,18 +95,21 @@ public class Sudoku {
             if (!exists) locked.add(pos);
             else i--;
         }
-        this.locked = (Position[]) locked.toArray();
-        this.board = new int[9][9];
+        int i = 0;
+        for (Object position: locked.toArray()){
+            this.locked[i] = (Position) position;
+            i++;
+        }
         for (Position pos: this.locked){
             this.board[pos.x][pos.y] = board[pos.x][pos.y];
         }
     }
-    private void switchSpots(Position pos1, Position pos2){
+    private void switchSpots(int[][] board, Position pos1, Position pos2){
         int hold = board[pos1.x][pos1.y];
         board[pos1.x][pos1.y] = board[pos2.x][pos2.y];
         board[pos2.x][pos2.y] = hold;
     }
-    private void swapNumbers(int num1, int num2){
+    private void swapNumbers(int[][] board, int num1, int num2){
         for(int[] row: board){
             for (int i = 0; i<row.length; i++){
                 if (row[i] == num1){
@@ -102,32 +120,32 @@ public class Sudoku {
             }
         }
     }
-    private void switchColumns(int column1, int column2){
+    private void switchColumns(int[][] board, int column1, int column2){
         int[] hold = board[column1];
         board[column1] = board[column2];
         board[column2] = hold;
     }
-    private void switchRows(int row1, int row2){
+    private void switchRows(int[][] board, int row1, int row2){
         Position pos1 = new Position(), pos2 = new Position();
         pos1.y = row1;
         pos2.y = row2;
         for (int i = 0; i<board.length; i++) {
             pos1.x = i;
             pos2.x = i;
-            switchSpots(pos1, pos2);
+            switchSpots(board, pos1, pos2);
         }
     }
-    private void switchBlockColumns(int column1, int column2){
-        for (int i = 0; i<=3; i++){
-            switchColumns(column1*3+i, column2*3+i);
+    private void switchBlockColumns(int[][] board, int column1, int column2){
+        for (int i = 0; i<3; i++){
+            switchColumns(board, column1*3+i, column2*3+i);
         }
     }
-    private void switchBlockRows(int row1, int row2){
-        for (int i = 0; i<=3; i++){
-            switchRows(row1*3+i, row2*3+i);
+    private void switchBlockRows(int[][] board, int row1, int row2){
+        for (int i = 0; i<3; i++){
+            switchRows(board, row1*3+i, row2*3+i);
         }
     }
-    public boolean sudoku() {
+    public boolean win() {
         boolean retVal = true;
         int occurrences, num;
         // checking all rows
@@ -180,23 +198,40 @@ public class Sudoku {
         }
         return retVal;
     }
-    public static void print(list) {
-        for (int i = 0; i < reset().board[][].length; i++){
-            System.out.println("___________________");
-            System.out.println("|");
-            for (int j = 0; j < reset().board[][].length; j++){
-                if (list[i][j] == 0){
-                    System.out.println(" |");
-                } else{
-                    System.out.println(list[i][j]+"|");
+    public void print() {
+        System.out.println("\u001B[36m    1   2   3   4   5   6   7   8   9\u001B[37m");
+        for (int i = 0; i < board.length; i++){
+            System.out.println("  -------------------------------------");
+            System.out.print("\u001B[35m"+(i+1)+" ");
+            System.out.print("\u001B[37m|");
+            for (int j = 0; j < board[i].length; j++){
+                Position position = new Position();
+                position.x = i;
+                position.y = j;
+                if (board[i][j] == 0){
+                    System.out.print("   |");
+                } else if (locked(position)){
+                    System.out.print(" ");
+                    System.out.print("\u001B[33m"+board[i][j]);
+                    System.out.print("\u001B[37m |");
+                } else {
+                    System.out.print(" ");
+                    System.out.print(board[i][j]);
+                    System.out.print(" |");
                 }
             }
+            System.out.println();
         }
-        System.out.println("___________________");
+        System.out.println("  -------------------------------------");
     }
-    public boolean set(Position position, int value){
-        boolean retVal = value<10 && value > 0;
-        if(retVal) board[position.x-1][position.y-1] = value-1;
-        return retVal;
+    private boolean locked(Position position){
+        boolean retval = false;
+        for (Position pos : locked){
+            if (position.y == pos.y && position.x == pos.x){
+                retval = true;
+                break;
+            }
+        }
+        return retval;
     }
 }
