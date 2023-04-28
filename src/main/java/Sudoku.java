@@ -174,6 +174,27 @@ public class Sudoku {
                 }
             }
         }
+        Block[] blocks = new Block[9];
+        for (i = 0; i<blocks.length; i++){
+            blocks[i] = new Block(i, board);
+        }
+        for(Block block: blocks){
+            occurences = new int[]{0,0,0,0,0,0,0,0,0};
+            for (i = 0; i < 3; i++){
+                for (int j = 0; j < 3; j++){
+                    for (num = 1; num < 10; num++){
+                        if (num == block.getPositions()[i][j]){
+                            occurences[num]++;
+                        }
+                    }
+                }
+            }
+            for (int occ: occurences){
+                if (occ!= 1){
+                    retVal = false;
+                }
+            }
+        }
         return retVal;
     }
     public void print() {
