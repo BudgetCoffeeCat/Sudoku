@@ -147,52 +147,30 @@ public class Sudoku {
     }
     public boolean win() {
         boolean retVal = true;
-        int occurrences, num;
-        // checking all rows
-        for (int i = 0; i < board.length; i++) {//cycles through each row
-            for (num = 1; num <= 9; num++) {//cycles through numbers 1 - 9
-                occurrences = 0;
-                for (int val:board[i]) {// goes through each value in the row
-                    if (val == num){
-                        occurrences++;// every time the number appears in the row, occurrences increments
-                    }
+        int num;
+        int[] occurences = new int[]{0,0,0,0,0,0,0,0,0};
+        int i = 0;
+        for (int[] row: board){
+            i++;
+            for (int val: row){
+                if (val != 0){
+                    occurences[val]++;
                 }
-                if (occurrences!=1){// if there is not 1 occurrence of the number in the row, then it is not solved
+            }
+            for (int occ: occurences){
+                if (occ!=i){
                     retVal = false;
                 }
             }
         }
-        // checking all columns
-        for (int i = 0; i < board[0].length; i++) {//cycles through each column
-            for (num = 1; num <= 9; num++) {//cycles through numbers 1 - 9
-                occurrences = 0;
-                for (int j = 0; j <board.length; j++){// goes through each value in the column
-                    if (board[j][i] == num){
-                        occurrences++;// every time the number appears in the column, occurrences increments
-                    }
-                }
-                if (occurrences!=1){// if there is not 1 occurrence of the number in the column, then it is not solved
-                    retVal = false;
-                }
+        for (i = 0; i<9; i++){
+            occurences = new int[]{0,0,0,0,0,0,0,0,0};
+            for(int[] row: board){
+                occurences[row[i]]++;
             }
-        }
-        // checking squares
-        for (int block = 0; block < 9; block++){
-            int blockY, blockX;
-            Position pos = new Position();
-            blockY = block/3;//sets the y value for each block
-            blockX = block%3;//sets the x value for each block
-            for (num = 1; num <10; num++) {//checks if numbers 1 through 9 are in the block once
-                occurrences = 0;
-                for (pos.x = 3*blockX-3; pos.x<= 3*blockX; pos.x++){//pos is the position of the current spot being checked
-                    for (pos.y = 3 * blockY - 3; pos.y <= 3 * blockY; pos.y++) {//cycles through the 3 y values in each block for each of the 3 x values
-                        if (num == board[pos.x][pos.y]){//if the number is in the position
-                            occurrences++;
-                        }
-                    }
-                }
-                if (occurrences!=1){
-                    retVal = false;// if there is not one of any number in the block, then it is not solved
+            for (int occ: occurences){
+                if (occ!= 1){
+                    retVal = false;
                 }
             }
         }
@@ -200,8 +178,8 @@ public class Sudoku {
     }
     public void print() {
         System.out.println("\u001B[36m    1   2   3   4   5   6   7   8   9\u001B[37m");
+        System.out.println("  |---|---|---|---|---|---|---|---|---|");
         for (int i = 0; i < board.length; i++){
-            System.out.println("  -------------------------------------");
             System.out.print("\u001B[35m"+(i+1)+" ");
             System.out.print("\u001B[37m|");
             for (int j = 0; j < board[i].length; j++){
@@ -216,13 +194,13 @@ public class Sudoku {
                     System.out.print("\u001B[37m |");
                 } else {
                     System.out.print(" ");
-                    System.out.print(board[i][j]);
-                    System.out.print(" |");
+                    System.out.print("\u001B[32m"+board[i][j]);
+                    System.out.print("\u001B[37m |");
                 }
             }
             System.out.println();
+            System.out.println("  |---|---|---|---|---|---|---|---|---|");
         }
-        System.out.println("  -------------------------------------");
     }
     private boolean locked(Position position){
         boolean retval = false;
