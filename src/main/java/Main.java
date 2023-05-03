@@ -13,8 +13,8 @@ public class Main {
         boolean win = false, play = true;
         System.out.println("Done making board.");
         while (play) {
+            sudoku.reset(getInt("Set Your difficulty\n(the number of squares that start filled out)(integer from 0 to 80)", 0, 80));
             while (!win) {
-                sudoku.reset(getInt("Set Your difficulty\n(the number of squares that start filled out)(integer from 0 to 80)", 0, 80));
                 sudoku.print();
                 Position position = new Position();
                 value = getInt("\u001B[36mEnter the column # \u001B[35mthen Enter the row # \u001B[32m then enter the value (integer from 0-9, 0 to represent blank\u001B[37m)\nIf you put value 4 in spot (5, 9), you would write \u001B[36m5\u001B[35m9\u001B[32m4\u001B[37m", 110, 999);
