@@ -3,6 +3,8 @@
  *  Deepesh Kothari
  *  Purpose:
  *      Creates a class that stores the information for a sudoku board
+ *  Modified 5 May 2023 DK
+ *      Made is so that the user can restart and create a new board
  */
 
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import java.util.Random;
 
 public class Sudoku {
     private int[][] board;
+    private boolean firstBoard = true;
     private int difficulty;
     private Position[] locked;
     private final int[][] solvedBoard = new int[][]{
@@ -37,21 +40,31 @@ public class Sudoku {
         }
         board[position.row][position.column] = newVal;
     }
+    public void restart(boolean newBoard, int difficulty){
+        if (newBoard){
+            reset(difficulty);
+        } else {
+            int[][] board = this.board;
+            this.board = new int[][]{
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0}
+            };
+            for (Position pos : locked) {//sets the locked values for the local board
+                this.board[pos.row][pos.column] = board[pos.row][pos.column];
+            }
+        }
+    }
     public void reset(int difficulty){
         this.difficulty = difficulty;
         locked = new Position[difficulty];
         int[][] board = solvedBoard.clone();
-        this.board = new int[][]{
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0}
-        };
         Random random = new Random(System.currentTimeMillis());
         for (int j = 1; j<10; j++){//randomize where each of the numbers are
             swapNumbers(board, j, random.nextInt(9)+1);
@@ -102,8 +115,23 @@ public class Sudoku {
             this.locked[i] = (Position) position;
             i++;
         }
-        for (Position pos: this.locked){//sets the original values for the local board
-            this.board[pos.row][pos.column] = board[pos.row][pos.column];
+        if (firstBoard){
+            this.board = new int[][]{
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0}
+            };
+            for (Position pos : locked) {//sets the locked values for the local board
+                this.board[pos.row][pos.column] = board[pos.row][pos.column];
+            }
+        } else {
+            restart(false, 0);//sets the starting values to the board
         }
     }
     private void switchSpots(int[][] board, Position pos1, Position pos2){

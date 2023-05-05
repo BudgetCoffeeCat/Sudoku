@@ -17,21 +17,30 @@ public class Main {
             while (!win) {
                 sudoku.print();
                 Position position = new Position();
-                value = getInt("\u001B[36mEnter the column # \u001B[35mthen Enter the row # \u001B[32m then enter the value (integer from 0-9, 0 to represent blank\u001B[37m)\nIf you put value 4 in spot (5, 9), you would write \u001B[36m5\u001B[35m9\u001B[32m4\u001B[37m", 110, 999);
-                position.row = (value / 10) % 10;
-                position.column = value / 100;
-                value = value % 10;
-                try {
-                    sudoku.setPosition(position, value);
-                } catch (Exception e) {
-                    System.out.println(e.toString());
-                }
-                win = sudoku.win();
-                if (win) {
-                    sudoku.print();
-                    System.out.println("You solved the puzzle!");
+                value = getInt("\u001B[36mEnter the column # \u001B[35mthen Enter the row # \u001B[32m then enter the value (integer from 0-9, 0 to represent blank\u001B[37m)\nIf you put value 4 in spot (5, 9), you would write \u001B[36m5\u001B[35m9\u001B[32m4\u001B[37m\nenter 1000 to quit", 110, 1000);
+                if (value == 1000) {
+                    value = getInt("Do you want a new board?(1:y, 2:n)", 1, 2);
+                    if (value == 1){
+                        sudoku.restart(true, getInt("Set Your difficulty\n(the number of squares that start filled out)(integer from 0 to 80)", 0, 80));
+                    } else {
+                        sudoku.restart(false, 0);
+                    }
                 } else {
-                    System.out.println("The puzzle is not solved.");
+                    position.row = (value / 10) % 10;
+                    position.column = value / 100;
+                    value = value % 10;
+                    try {
+                        sudoku.setPosition(position, value);
+                    } catch (Exception e) {
+                        System.out.println(e.toString());
+                    }
+                    win = sudoku.win();
+                    if (win) {
+                        sudoku.print();
+                        System.out.println("You solved the puzzle!");
+                    } else {
+                        System.out.println("The puzzle is not solved.");
+                    }
                 }
             }
             wins++;
